@@ -32,4 +32,10 @@ public class LoginServiceImpl implements LoginService {
 			System.out.println("In Service class...Get Notification");
 			return loginDAO.getNotification(userName);
 		}
+		public String checkSR(String userName){
+	           
+			   System.out.println("In Service class...Check Login");
+	           
+			   return loginDAO.checkSpecialRole(userName);
+		   }
 	}

@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.crce.interns.service.CheckRoleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +25,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class DownloadController extends HttpServlet{
-
+	@Autowired
+	private CheckRoleService crService;
 	private String basePath = "C:\\Users\\Melwyn\\Desktop\\PMS";
 	
 	//The base path would be the root directory of all the folders
@@ -81,23 +84,29 @@ public class DownloadController extends HttpServlet{
 	public ModelAndView viewFiles(HttpServletRequest request, HttpServletResponse response) {
 		String userName = (String) request.getSession().getAttribute("userName");
 		String role = getRole((String) request.getSession().getAttribute("roleId"));
-		String directoryPath = basePath + "\\" + role + "\\" + userName;
-		File directory = new File(directoryPath);
-		File[] listOfFiles = directory.listFiles();
+		String roleId=(String) request.getSession().getAttribute("roleId");
+		if(!crService.checkRole("Download", roleId))
+			return new ModelAndView("403");
+		else
+		{
+			String directoryPath = basePath + "\\" + role + "\\" + userName;
+			File directory = new File(directoryPath);
+			File[] listOfFiles = directory.listFiles();
 		
-		System.out.println(directoryPath);
+			System.out.println(directoryPath);
 		
-		List<String> fileList = new ArrayList<String>();
-		for (File file : listOfFiles) {
-			if (file.isFile()) {
-				System.out.println("FILE : " + file.getName());
-				fileList.add(file.getName());
-			} else 
+			List<String> fileList = new ArrayList<String>();
+			for (File file : listOfFiles) {
+				if (file.isFile()) {
+					System.out.println("FILE : " + file.getName());
+					fileList.add(file.getName());
+				} else 
 				System.out.println("DIRECTORY : " + file.getName());
+			}
+			Map<String, Object> modelMap = new HashMap<String, Object>();
+			modelMap.put("fileList", fileList);
+			return new ModelAndView("viewResumes", modelMap);
 		}
-		Map<String, Object> modelMap = new HashMap<String, Object>();
-		modelMap.put("fileList", fileList);
-		return new ModelAndView("viewResumes", modelMap);
 	}
 	
 	public String getRole(String role) {

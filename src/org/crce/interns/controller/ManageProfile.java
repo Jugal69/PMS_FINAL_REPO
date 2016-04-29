@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Map;
 
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,6 +17,7 @@ import org.crce.interns.beans.CompanyBean;
 import org.crce.interns.beans.CriteriaBean;
 import org.crce.interns.beans.JobBean;
 import org.crce.interns.model.Job;
+import org.crce.interns.service.CheckRoleService;
 //import org.crce.interns.model.Allotment;
 //import org.crce.interns.beans.ProfileBean;
 import org.crce.interns.service.ManageProfileService;
@@ -37,7 +40,8 @@ public class ManageProfile extends HttpServlet{
 	
 	@Autowired
 	private ManageProfileService manageProfileService;
-
+	@Autowired
+	private CheckRoleService crService;
 	/*
 	@RequestMapping("/")
 	public ModelAndView welcome() {
@@ -111,26 +115,39 @@ public class ManageProfile extends HttpServlet{
 	}
 
 	@RequestMapping(value = "/addProfile", method = RequestMethod.GET)
-	public ModelAndView createProfile(Model model) {
+	public ModelAndView createProfile(HttpServletRequest request,Model model) {
 		// ProfileBean profileBean = new ProfileBean();
-		JobBean jobBean = new JobBean(); // declaring
-		CriteriaBean criteriaBean = new CriteriaBean();
-		CompanyBean companyBean = new CompanyBean();
+		HttpSession session=request.getSession();
+		String roleId=(String)session.getAttribute("roleId");
+		if(!crService.checkRole("ManageProfile", roleId))
+			return new ModelAndView("403");
+		else
+		{
+			JobBean jobBean = new JobBean(); // declaring
+			CriteriaBean criteriaBean = new CriteriaBean();
+			CompanyBean companyBean = new CompanyBean();
 
-		model.addAttribute("profileBean", jobBean); // adding in model
-		model.addAttribute("profileBean", criteriaBean);
-		model.addAttribute("profileBean", companyBean);
+			model.addAttribute("profileBean", jobBean); // adding in model
+			model.addAttribute("profileBean", criteriaBean);
+			model.addAttribute("profileBean", companyBean);
 		
-		System.out.println("In Profile Controller");
-		return new ModelAndView("addProfile");
-		
+			System.out.println("In Profile Controller");
+			return new ModelAndView("addProfile");
+		}
 	}
 	
 	@RequestMapping(value="/viewProfile", method = RequestMethod.GET)
-	public ModelAndView listProfile() {
-		Map<String, Object> model = new HashMap<String, Object>();
-		model.put("profiles",  prepareListofBean(manageProfileService.listProfile()));
-		return new ModelAndView("viewJobProfile", model);
+	public ModelAndView listProfile(HttpServletRequest request) {
+		HttpSession session=request.getSession();
+		String roleId=(String)session.getAttribute("roleId");
+		if(!crService.checkRole("ManageProfile", roleId))
+			return new ModelAndView("403");
+		else
+		{
+			Map<String, Object> model = new HashMap<String, Object>();
+			model.put("profiles",  prepareListofBean(manageProfileService.listProfile()));
+			return new ModelAndView("viewJobProfile", model);
+		}
 	}
 	
 	private List<JobBean> prepareListofBean(List<Job> profiles) {

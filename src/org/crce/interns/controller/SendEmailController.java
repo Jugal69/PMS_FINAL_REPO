@@ -10,7 +10,9 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
+import org.crce.interns.service.CheckRoleService;
 import org.crce.interns.service.SendEmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -29,7 +31,8 @@ public class SendEmailController {
 	
 	@Autowired
 	public SendEmailService sendEmailService;
-
+	@Autowired
+	private CheckRoleService crService;
 	/*
         Return Type: Boolean-True/False
         Function: Checks for Files
@@ -80,8 +83,13 @@ public class SendEmailController {
         Function: Displays The Compose an e-mail page
 	*/
 	@RequestMapping(method=RequestMethod.GET, value="/sendMail")
-	public ModelAndView email_welcome() {
+	public ModelAndView email_welcome(HttpServletRequest request) {
 		System.out.println("Mapped to /sendMail");
+		HttpSession session=request.getSession();
+		String roleId=(String)session.getAttribute("roleId");
+		if(!crService.checkRole("SendEmail", roleId))
+			return new ModelAndView("403");
+		else
 		return new ModelAndView("EmailForm");
 		//return new ModelAndView("Final");
 	}

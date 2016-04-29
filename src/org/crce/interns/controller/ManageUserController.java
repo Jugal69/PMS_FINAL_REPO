@@ -3,9 +3,13 @@ package org.crce.interns.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.crce.interns.beans.FacultyBean;
 import org.crce.interns.beans.StudentBean;
 import org.crce.interns.model.Student;
+import org.crce.interns.service.CheckRoleService;
 import org.crce.interns.service.ManageUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,7 +32,8 @@ public class ManageUserController {
 
 	@Autowired
 	private ManageUserService manageUserService;
-	
+	@Autowired
+	private CheckRoleService crService;
 	/*@RequestMapping("/")
 	public ModelAndView welcome() {
 				return new ModelAndView("index");
@@ -50,20 +55,34 @@ public class ManageUserController {
 	}
 	
 	@RequestMapping(value = "/addstudent", method = RequestMethod.GET)
-	public ModelAndView welcomeStudent(Model model) {
-		 StudentBean studentBean = new StudentBean(); // declaring
+	public ModelAndView welcomeStudent(HttpServletRequest request,Model model) {
+		HttpSession session=request.getSession();
+		String roleId=(String)session.getAttribute("roleId");
+		if(!crService.checkRole("ManageUser", roleId))
+			return new ModelAndView("403");
+		else
+		{
+			StudentBean studentBean = new StudentBean(); // declaring
 
-         model.addAttribute("studentBean", studentBean); // adding in model
+			model.addAttribute("studentBean", studentBean); // adding in model
 
-		return new ModelAndView("addStudent");
+			return new ModelAndView("addStudent");
+		}
 	}
 	
 	@RequestMapping(value = "/addfaculty", method = RequestMethod.GET)
-	public ModelAndView welcomeFaculty(Model model) {
-		 FacultyBean facultyBean = new FacultyBean(); // declaring
+	public ModelAndView welcomeFaculty(HttpServletRequest request,Model model) {
+		HttpSession session=request.getSession();
+		String roleId=(String)session.getAttribute("roleId");
+		if(!crService.checkRole("ManageUser", roleId))
+			return new ModelAndView("403");
+		else
+		{
+			FacultyBean facultyBean = new FacultyBean(); // declaring
 
-         model.addAttribute("facultyBean", facultyBean); // adding in model
-		return new ModelAndView("addFaculty");
+			model.addAttribute("facultyBean", facultyBean); // adding in model
+			return new ModelAndView("addFaculty");
+		}
 	}
 	
 	
@@ -74,7 +93,12 @@ public class ManageUserController {
 	
 	
 	@RequestMapping(value = "/removeuser", method = RequestMethod.GET)
-	public ModelAndView removeUser() {
+	public ModelAndView removeUser(HttpServletRequest request) {
+		HttpSession session=request.getSession();
+		String roleId=(String)session.getAttribute("roleId");
+		if(!crService.checkRole("ManageUser", roleId))
+			return new ModelAndView("403");
+		else
 		return new ModelAndView("removeUser");		
 	}
 	

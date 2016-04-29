@@ -7,9 +7,12 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.crce.interns.beans.AllotmentBean;
 import org.crce.interns.model.Allotment;
+import org.crce.interns.service.CheckRoleService;
+import org.crce.interns.service.LoginService;
 import org.crce.interns.service.ManageAllotmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,7 +36,10 @@ public class ManageAllotment extends HttpServlet{
 	private static final long serialVersionUID = 3205005179545325725L;
 	@Autowired
 	private ManageAllotmentService manageAllotmentService;
-	
+	@Autowired
+	private CheckRoleService crService;
+	@Autowired
+	public LoginService loginService;
 	/*
 	@RequestMapping("/")
 	public ModelAndView welcome() {
@@ -61,21 +67,36 @@ public class ManageAllotment extends HttpServlet{
 	*/
 	
 	@RequestMapping(value = "/addAllotment", method = RequestMethod.GET)
-	public ModelAndView createAllotment(Model model) {
-		AllotmentBean allotmentBean = new AllotmentBean(); // declaring
+	public ModelAndView createAllotment(HttpServletRequest request,Model model) {
+		HttpSession session=request.getSession();
+		String roleId=(String)session.getAttribute("roleId");
+		String user=(String)session.getAttribute("userName");
+		String name=loginService.checkSR(user);
+		if(!(crService.checkRole("ManageAllotment", roleId)&&name.equals("703")))
+			return new ModelAndView("403");
+		else
+		{
+			AllotmentBean allotmentBean = new AllotmentBean(); // declaring
 
-         model.addAttribute("allotmentBean", allotmentBean); // adding in model
-         Map<String, Object> model1 = new HashMap<String, Object>();
- 		 model1.put("allotments",  prepareListofBean(manageAllotmentService.listAllotment()));
-		 return new ModelAndView("addAllotment");
-		 
+			model.addAttribute("allotmentBean", allotmentBean); // adding in model
+			Map<String, Object> model1 = new HashMap<String, Object>();
+			model1.put("allotments",  prepareListofBean(manageAllotmentService.listAllotment()));
+			return new ModelAndView("addAllotment");
+		}
 	}
 
 	@RequestMapping(value="/viewAllotment", method = RequestMethod.GET)
-	public ModelAndView listAllotment() {
-		Map<String, Object> model = new HashMap<String, Object>();
-		model.put("allotments",  prepareListofBean(manageAllotmentService.listAllotment()));
-		return new ModelAndView("viewAllotment", model);
+	public ModelAndView listAllotment(HttpServletRequest request) {
+		HttpSession session=request.getSession();
+		String roleId=(String)session.getAttribute("roleId");
+		if(!crService.checkRole("ManageAllotment", roleId))
+			return new ModelAndView("403");
+		else
+		{
+			Map<String, Object> model = new HashMap<String, Object>();
+			model.put("allotments",  prepareListofBean(manageAllotmentService.listAllotment()));
+			return new ModelAndView("viewAllotment", model);
+		}
 	}
 	
 	private List<AllotmentBean> prepareListofBean(List<Allotment> allotments) {

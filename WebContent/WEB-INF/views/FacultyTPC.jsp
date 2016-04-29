@@ -56,10 +56,10 @@
 	</a></h2> -->
 	<table>
 		<tr>
-			<td><a href="AssignTPCF.html">Assign Student TPC</a></td>
+			<td><a href="AssignTPC.html">Assign Student TPC</a></td>
 		</tr>
 		<tr>
-			<td><a href="RemoveTPCF.html">Remove Student TPC</a></td>
+			<td><a href="RemoveTPC.html">Remove Student TPC</a></td>
 		</tr>
 		<tr>
 			<td><a href="ViewUsersF.html">View Users</a></td>

@@ -8,6 +8,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.crce.interns.dao.LoginDAO;
 import org.crce.interns.model.RoleMaster;
+import org.crce.interns.model.SpecialRole;
 import org.crce.interns.model.UserDetails;
 //import org.crce.interns.model.UserDetails;
 import org.hibernate.Query;
@@ -79,4 +80,32 @@ public class LoginDAOImpl implements LoginDAO{
 		session.close();
 		return b;
 	}
+public String checkSpecialRole(String userName) {
+		
+		System.out.println("In Check Special Role");
+		
+		Session session = sessionFactory.openSession();
+		
+		String specialRole="";
+		
+		//Query using Hibernate Query Language
+		String SQL_QUERY ="from SpecialRole as r where r.userName=?";
+		
+		Query query = session.createQuery(SQL_QUERY);
+		query.setParameter(0,userName);
+		
+		
+		List list = query.list();
+		
+		if  ( !(list.isEmpty())){
+			SpecialRole r=(SpecialRole)list.get(0);
+			specialRole=r.getSpecialRole();
+			System.out.println("Role:"+specialRole);
+		}
+		
+		session.close();
+
+		return specialRole;
+	}
+
   }

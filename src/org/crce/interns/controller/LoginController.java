@@ -13,6 +13,7 @@ import org.crce.interns.beans.NotifyForm;
 import org.crce.interns.beans.PersonalProfileBean;
 import org.crce.interns.beans.ProfessionalProfileBean;
 import org.crce.interns.beans.UserDetailsBean;
+import org.crce.interns.service.CheckRoleService;
 import org.crce.interns.service.LoginService;
 import org.crce.interns.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class LoginController extends HttpServlet{
 	public LoginService loginService;
 	
 	@Autowired
-	private ProfileService profileService;
+	private CheckRoleService crService;
 	
 	@RequestMapping("/")
 	public ModelAndView welcome() {
@@ -68,9 +69,9 @@ public class LoginController extends HttpServlet{
 		
 		if(role.equals("Student")){
 			
-			//model = new ModelAndView("Student");
+			model = new ModelAndView("Student");
 			
-			model = new ModelAndView("redirect:/viewprofile");
+			//model = new ModelAndView("redirect:/viewprofile");
 			HttpSession session=request.getSession();
 			String id =  request.getParameter("userName");
 		    System.out.println("UserName: " + id); // Here it prints the username properly
@@ -145,25 +146,36 @@ public class LoginController extends HttpServlet{
 		}
 		else{
 			result.rejectValue("userName","invaliduser");
-			model = new ModelAndView("loginform");
+			model = new ModelAndView("Login");
 			return model;
 		}
 	}
 	
 	@RequestMapping(value="/notify" ,method = RequestMethod.POST)
-	public String notifyForm(@Valid NotifyForm notify, BindingResult result,
+	public ModelAndView notifyForm(HttpServletRequest request, HttpServletResponse response,@Valid NotifyForm notify, BindingResult result,
 			Map model) 
 	{
-		String userName=notify.getUserName();
-		int update=loginService.getStudentByid(userName);
-		//System.out.println("hello");
-		if(update==0)
-		{
-			model.put("notify",notify);
-			return "FacultyTPC";
-		}
+		HttpSession session=request.getSession();
+		String roleId=(String)session.getAttribute("roleId");
+		String user=(String)session.getAttribute("userName");
+		String name=loginService.checkSR(user);
+		
+		
+		if(!(crService.checkRole("FacultyTPCNotify", roleId)&&name.equals("702")))
+			return new ModelAndView("403");
 		else
-			return "success";
+		{
+			String userName=notify.getUserName();
+			int update=loginService.getStudentByid(userName);
+		//System.out.println("hello");
+			if(update==0)
+			{
+				model.put("notify",notify);
+				return new ModelAndView("FacultyTPC");
+			}
+			else
+				return new ModelAndView("success");
+		}
 	}
 	
 

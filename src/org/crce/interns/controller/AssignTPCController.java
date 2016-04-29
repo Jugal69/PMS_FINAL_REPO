@@ -5,10 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.crce.interns.beans.FacultyUserBean;
 import org.crce.interns.beans.UserDetailsBean;
 import org.crce.interns.model.UserDetails;
 import org.crce.interns.service.AssignTPCService;
+import org.crce.interns.service.CheckRoleService;
+import org.crce.interns.service.GetBranchService;
 import org.crce.interns.validators.AddTPCTaskValidator;
 import org.crce.interns.validators.AddTPCValidator;
 import org.crce.interns.validators.RemoveTPCValidator;
@@ -34,57 +39,100 @@ public class AssignTPCController {
 
 	@Autowired
 	AddTPCTaskValidator addTPCTaskValidator;
-
+	@Autowired
+	private CheckRoleService crService;
+	@Autowired
+	private GetBranchService gbService;
 
 	@RequestMapping(value = "/TPOHome", method = RequestMethod.GET)
-	public ModelAndView goTPOHome(@ModelAttribute("command") FacultyUserBean userBean, BindingResult result) {
+	public ModelAndView goTPOHome(HttpServletRequest request,@ModelAttribute("command") FacultyUserBean userBean, BindingResult result) {
 		System.out.println("In TPO Home Page\n");
+		HttpSession session=request.getSession();
+		String roleId=(String)session.getAttribute("roleId");
+		if(!crService.checkRole("AssignTPC", roleId))
+			return new ModelAndView("403");
+		else
 		return new ModelAndView("TPO");
 	}
 	
 	@RequestMapping(value="/ViewUsersT", method = RequestMethod.GET)
-	public ModelAndView viewUsers() {
-		Map<String, Object> modelMap = new HashMap<String, Object>();
-		modelMap.put("users", userService.viewUsers());
-		return new ModelAndView("viewUserT", modelMap);
+	public ModelAndView viewUsers(HttpServletRequest request) {
+		HttpSession session=request.getSession();
+		String roleId=(String)session.getAttribute("roleId");
+		if(!crService.checkRole("AssignTPC", roleId))
+			return new ModelAndView("403");
+		else
+		{
+			Map<String, Object> modelMap = new HashMap<String, Object>();
+			modelMap.put("users", userService.viewUsers());
+			return new ModelAndView("viewUserT", modelMap);
+		}
 	}
 	
 	@RequestMapping(value="/ViewFacultyTasks", method = RequestMethod.GET)
-	public ModelAndView viewFacultyTasks() {
+	public ModelAndView viewFacultyTasks(HttpServletRequest request) {
 		System.out.println("In View TPC Tasks\n");
-		Map<String, Object> modelMap = new HashMap<String, Object>();
-		modelMap.put("fusers", userService.viewFacultyTasks());
-		return new ModelAndView("viewFacultyTasks", modelMap);
+		HttpSession session=request.getSession();
+		String roleId=(String)session.getAttribute("roleId");
+		if(!crService.checkRole("AssignTPC", roleId))
+			return new ModelAndView("403");
+		else
+		{
+			Map<String, Object> modelMap = new HashMap<String, Object>();
+			modelMap.put("fusers", userService.viewFacultyTasks());
+			return new ModelAndView("viewFacultyTasks", modelMap);
+		}
 	}
 	
 	
 	@RequestMapping(value = "/InsertWork", method = RequestMethod.GET)
-	public ModelAndView createUserWork(@ModelAttribute("command") FacultyUserBean userBean, BindingResult result) {
+	public ModelAndView createUserWork(HttpServletRequest request,@ModelAttribute("command") FacultyUserBean userBean, BindingResult result) {
 		System.out.println("In Assign TPC Work\n");
+		HttpSession session=request.getSession();
+		String roleId=(String)session.getAttribute("roleId");
+		if(!crService.checkRole("AssignTPC", roleId))
+			return new ModelAndView("403");
+		else
 		return new ModelAndView("insertWork");
 	}
 	
 	@RequestMapping(value = "/AssignTPC", method = RequestMethod.GET)
-	public ModelAndView assignTPC(@ModelAttribute("command") UserDetailsBean userBean, BindingResult result) {
+	public ModelAndView assignTPC(HttpServletRequest request,@ModelAttribute("command") UserDetailsBean userBean, BindingResult result) {
 		System.out.println("In Assign TPC\n");
+		HttpSession session=request.getSession();
+		String roleId=(String)session.getAttribute("roleId");
+		if(!crService.checkRole("AssignTPC", roleId))
+			return new ModelAndView("403");
+		else
 		return new ModelAndView("assignTPC");
 	}
 	
 	@RequestMapping(value = "/RemoveTPC", method = RequestMethod.GET)
-	public ModelAndView removeTPC(@ModelAttribute("command") UserDetailsBean userBean, BindingResult result) {
+	public ModelAndView removeTPC(HttpServletRequest request,@ModelAttribute("command") UserDetailsBean userBean, BindingResult result) {
 		System.out.println("In Remove TPC\n");
-		return new ModelAndView("removeTPC");
+		HttpSession session=request.getSession();
+		String roleId=(String)session.getAttribute("roleId");
+		if(!crService.checkRole("AssignTPC", roleId))
+			return new ModelAndView("403");
+		else
+			return new ModelAndView("removeTPC");
 	}
 
 	@RequestMapping(value = "/SubmitAssignTPC", method = RequestMethod.POST)
-	public ModelAndView submitAssignTPC(@ModelAttribute("command") UserDetailsBean userBean,/*@ModelAttribute("fuserBean")FacultyUserBean fuserBean,*/ BindingResult bindingResult) {
+	public ModelAndView submitAssignTPC(HttpServletRequest request,@ModelAttribute("command") UserDetailsBean userBean,/*@ModelAttribute("fuserBean")FacultyUserBean fuserBean,*/ BindingResult bindingResult) {
 		validator.validate(userBean, bindingResult);
 		System.out.println("In Submit Assign TPC\n");
 		if (bindingResult.hasErrors()) {
 			System.out.println("Binding Errors are present...");
 			return new ModelAndView("assignTPC");
 		}
+		HttpSession session=request.getSession();
+		String user=(String)session.getAttribute("userName");
+		String branch1=gbService.getBranch(userBean.getUserName());
+		String branch2=gbService.getBranch(user);
 		//System.out.println("Task Assigned is "+fuserBean.getUserWork());
+		if(!branch1.equalsIgnoreCase(branch2))
+			return new ModelAndView("assignTPC");
 		int a;
 		a=userService.assignTPC(userBean);
 	//	FacultyUserBean fuserBean= new FacultyUserBean();

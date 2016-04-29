@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import org.crce.interns.beans.PersonalProfileBean;
 import org.crce.interns.beans.ProfessionalProfileBean;
 import org.crce.interns.beans.UserDetailsBean;
+import org.crce.interns.service.CheckRoleService;
 import org.crce.interns.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,7 +32,8 @@ public class UpdateProfileController {
 	//private ProfileService profileService;
 	@Autowired
 	private ProfileService profileService;
-	
+	@Autowired
+	private CheckRoleService crService;
 	/*
 	@RequestMapping(value="/", method = RequestMethod.GET)
 	public ModelAndView index() {
@@ -59,36 +61,42 @@ public class UpdateProfileController {
 	
 	
 	@RequestMapping(value="/viewprofile", method = RequestMethod.GET)
-	public ModelAndView login(@ModelAttribute("u")String id) {
+	public ModelAndView login(HttpServletRequest request,@ModelAttribute("u")String id) {
 		
 		System.out.println("Inside Controller");
-		
-		ModelAndView model=null;
+		HttpSession session=request.getSession();
+		String roleId=(String)session.getAttribute("roleId");
+		if(!crService.checkRole("UpdateProfile", roleId))
+			return new ModelAndView("403");
+		else
+		{
+			ModelAndView model=null;
 
 		///*
-		UserDetailsBean userDetailsBean= new UserDetailsBean();
-		userDetailsBean.setUserName(id);
-		ProfessionalProfileBean professionalProfileBean=new ProfessionalProfileBean();
-		PersonalProfileBean personalProfileBean=new PersonalProfileBean();
+			UserDetailsBean userDetailsBean= new UserDetailsBean();
+			userDetailsBean.setUserName(id);
+			ProfessionalProfileBean professionalProfileBean=new ProfessionalProfileBean();
+			PersonalProfileBean personalProfileBean=new PersonalProfileBean();
 		
 		
-		userDetailsBean.setUserName(id);
+			userDetailsBean.setUserName(id);
 		//professionalProfileBean.setUserName(id);
-		professionalProfileBean.setUserName(id);
-		personalProfileBean.setUserName(id);
+			professionalProfileBean.setUserName(id);
+			personalProfileBean.setUserName(id);
 		
 		
-		userDetailsBean = profileService.getProfile(userDetailsBean);
-		professionalProfileBean = profileService.getProfile(professionalProfileBean);
-		personalProfileBean = profileService.getProfile(personalProfileBean);	
+			userDetailsBean = profileService.getProfile(userDetailsBean);
+			professionalProfileBean = profileService.getProfile(professionalProfileBean);
+			personalProfileBean = profileService.getProfile(personalProfileBean);	
 		
-		model = new ModelAndView("Student");
+			model = new ModelAndView("Student");
 		
-		model.addObject("userDetails",userDetailsBean);
-		model.addObject("professionalProfile",professionalProfileBean);
-		model.addObject("personalProfile",personalProfileBean);
+			model.addObject("userDetails",userDetailsBean);
+			model.addObject("professionalProfile",professionalProfileBean);
+			model.addObject("personalProfile",personalProfileBean);
 		//*/
-		return model;
+			return model;
+		}
 	}
 	
 	
@@ -99,31 +107,36 @@ public class UpdateProfileController {
 		
 		HttpSession session=request.getSession();
 		String id = (String) session.getAttribute("userName");
+		String roleId=(String)session.getAttribute("roleId");
+		if(!crService.checkRole("UpdateProfile", roleId))
+			return new ModelAndView("403");
+		else
+		{
+			System.out.println("Inside Controller");
 		
-		System.out.println("Inside Controller");
-		
-		ModelAndView model=null;		
+			ModelAndView model=null;		
 
-		UserDetailsBean userDetailsBean= new UserDetailsBean();
-		ProfessionalProfileBean professionalProfileBean=new ProfessionalProfileBean();
-		PersonalProfileBean personalProfileBean=new PersonalProfileBean();
+			UserDetailsBean userDetailsBean= new UserDetailsBean();
+			ProfessionalProfileBean professionalProfileBean=new ProfessionalProfileBean();
+			PersonalProfileBean personalProfileBean=new PersonalProfileBean();
 		
-		userDetailsBean.setUserName(id);
-		professionalProfileBean.setUserName(id);
-		personalProfileBean.setUserName(id);
+			userDetailsBean.setUserName(id);
+			professionalProfileBean.setUserName(id);
+			personalProfileBean.setUserName(id);
 
-		userDetailsBean = profileService.getProfile(userDetailsBean);
-		professionalProfileBean = profileService.getProfile(professionalProfileBean);
-		personalProfileBean = profileService.getProfile(personalProfileBean);
+			userDetailsBean = profileService.getProfile(userDetailsBean);
+			professionalProfileBean = profileService.getProfile(professionalProfileBean);
+			personalProfileBean = profileService.getProfile(personalProfileBean);
 		
 		
-		model = new ModelAndView("viewprofile");		
-		model.addObject("userDetails",userDetailsBean);
-		model.addObject("professionalProfile",professionalProfileBean);
-		model.addObject("personalProfile",personalProfileBean);
+			model = new ModelAndView("viewprofile");		
+			model.addObject("userDetails",userDetailsBean);
+			model.addObject("professionalProfile",professionalProfileBean);
+			model.addObject("personalProfile",personalProfileBean);
 
 		
-		return model;
+			return model;
+		}
 	}
 	
 	
@@ -140,7 +153,11 @@ public class UpdateProfileController {
 	
 		HttpSession session=request.getSession();
 		String id = (String) session.getAttribute("userName");
-		
+		String roleId=(String)session.getAttribute("roleId");
+		if(!crService.checkRole("UpdateProfile", roleId))
+			return new ModelAndView("403");
+		else
+		{
 		ModelAndView model=null;
 		
 		ProfessionalProfileBean professionalProfileBean = new ProfessionalProfileBean();
@@ -174,6 +191,7 @@ public class UpdateProfileController {
 		model.addObject("personalProfile",personalProfileBean);			
 		
 		return model;
+		}
 	}
 	
 	
@@ -268,26 +286,41 @@ public class UpdateProfileController {
 	
 	// extra
 	@RequestMapping(value="/nevz-feedback", method = RequestMethod.GET)
-	public ModelAndView f() {
+	public ModelAndView f(HttpServletRequest request) {
 		
 		System.out.println("Inside Controller");
-		
+		HttpSession session=request.getSession();
+		String id = (String) session.getAttribute("userName");
+		String roleId=(String)session.getAttribute("roleId");
+		if(!crService.checkRole("UpdateProfile", roleId))
+			return new ModelAndView("403");
+		else
+		{
 		ModelAndView model=null;
 		
 		model = new ModelAndView("FeedbackForm");
 				
 		return model;
+		}
 	}
 	@RequestMapping(value="/nevz-feedbacks", method = RequestMethod.GET)
-	public ModelAndView fs() {
+	public ModelAndView fs(HttpServletRequest request) {
 		
 		System.out.println("Inside Controller");
+		HttpSession session=request.getSession();
+		String id = (String) session.getAttribute("userName");
+		String roleId=(String)session.getAttribute("roleId");
 		
+		if(!crService.checkRole("UpdateProfile", roleId))
+			return new ModelAndView("403");
+		else
+		{
 		ModelAndView model=null;
 		
 		model = new ModelAndView("feedbacks");
 				
 		return model;
+		}
 	}
 }
 

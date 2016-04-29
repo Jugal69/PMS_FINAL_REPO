@@ -35,10 +35,10 @@
 			<td>3. <a href="removeuser.html">Remove User</a></td>
 		</tr>
 		<tr>
-			<td>4. <a href="AssignTPC.html">Assign TPC</a></td>
+			<td>4. <a href="AssignTPCF.html">Assign TPC</a></td>
 		</tr>
 		<tr>
-			<td>5. <a href="RemoveTPC.html">Remove TPC</a></td>
+			<td>5. <a href="RemoveTPCF.html">Remove TPC</a></td>
 		</tr>
 		<tr>
 			<td>6. <a href="InsertWork.html">Assign Task</a></td>
