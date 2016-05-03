@@ -51,7 +51,9 @@
 			<td>6. <a href="InsertMonth.html">Insert Month to view
 					Events Users</a><br /></td>
 		</tr>
-
+		<tr>
+			<td>7. <a href="AssignRole">Assign functions to various roles</a><br /></td>
+		</tr>
 
 	</table>
 

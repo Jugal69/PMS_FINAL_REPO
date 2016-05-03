@@ -12,21 +12,22 @@ import javax.persistence.Table;
 public class FunctionRole implements Serializable{
 	@Id
 	@Column(name = "role_id" )
-	String roleId;
+	private String roleId;
 	@Id
 	@Column(name = "function_id" )
-	String functionId;
+	private Integer functionId;
 	public String getRoleId() {
 		return roleId;
 	}
 	public void setRoleId(String roleId) {
 		this.roleId = roleId;
 	}
-	public String getFunctionId() {
+	public Integer getFunctionId() {
 		return functionId;
 	}
-	public void setFunctionId(String functionId) {
+	public void setFunctionId(Integer functionId) {
 		this.functionId = functionId;
 	}
+	
 	
 }

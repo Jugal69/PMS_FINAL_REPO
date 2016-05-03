@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -11,16 +13,17 @@ import javax.persistence.Table;
 @Table(name = "function_master",catalog="role_function_schema")
 public class FunctionMaster {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "function_id" )
-	int functionId;
+	private Integer functionId;
 	
 	
 	@Column(name = "function_name" )
-	String functionName;
+	private String functionName;
 	@Column(name = "function_url" )
-	String functionUrl;
+	private String functionUrl;
 	@Column(name = "created_by" )
-	String createdBy;
+	private String createdBy;
 	
 	@Column(name = "created_date" )
 	Date createdDate;
@@ -31,11 +34,13 @@ public class FunctionMaster {
 	@Column(name = "modified_date" )
 	Date modifiedDate;
 
-	public int getFunctionId() {
+	
+	
+	public Integer getFunctionId() {
 		return functionId;
 	}
 
-	public void setFunctionId(int functionId) {
+	public void setFunctionId(Integer functionId) {
 		this.functionId = functionId;
 	}
 
