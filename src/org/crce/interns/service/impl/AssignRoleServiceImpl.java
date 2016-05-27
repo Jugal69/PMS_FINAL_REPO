@@ -15,11 +15,21 @@ public class AssignRoleServiceImpl implements AssignRoleService {
 	public void setArd(AssignRoleDao ard) {
 		this.ard = ard;
 	}
+
+	/*Author:Khusaal
+	Classes Used: AssignRoleDao.java
+	Description: Calling AssignRoleDAOImpl.java*/
+
 	public void assignRole(FunctionMaster fm,FunctionRole fr,int a)
 	{
 		System.out.println("Inside AssignRole service");
 		ard.save(fm, fr,a);
 	}
+
+	/*Author:Khusaal
+	Classes Used: AssignRoleDao.java
+	Description: Calling AssignRoleDAOImpl.java*/
+
 	public int checkFunction(String s)
 	{
 		return ard.checkFunction(s);

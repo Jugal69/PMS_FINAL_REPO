@@ -14,6 +14,10 @@ public class CheckRoleServiceImpl implements CheckRoleService{
               this.checkRoleDAO = checkRoleDAO;
        }
       
+	/*Author:Khusaal
+	Classes Used: CheckRoleDAO.java
+	Description: Calling CheckRoleDAOImpl.java*/
+
 	   public boolean checkRole(String functionName, String roleId){
            
 		   System.out.println("In Service class...Check Role");

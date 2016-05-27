@@ -33,6 +33,10 @@ public class AssignRoleController {
 		return model;
 	}
 	
+	/*Author:Khusaal
+	Classes Used: AssignRoleBean.java,FunctionMaster.java,RoleMaster.java
+	Description: Assigning Role to various Users*/
+
 	@RequestMapping(value="/roleAssigned")
 	public ModelAndView assignRole(HttpServletRequest request, HttpServletResponse response, @Valid AssignRoleBean arb,BindingResult result) {
 		System.out.println("return model");

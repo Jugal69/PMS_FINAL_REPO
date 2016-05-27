@@ -24,6 +24,10 @@ public class CheckRoleDAOImpl implements CheckRoleDAO{
            return sessionFactory.openSession();
     }
 
+	/*Author:Khusaal
+	Classes Used: FunctionRole.java,FunctionMaster.java
+	Description: User Authorisation*/
+
 	public boolean checkRole(String functionName,String roleId) {
 		
 		System.out.println("In Check Role");

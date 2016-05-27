@@ -29,6 +29,10 @@ public class LoginDAOImpl implements LoginDAO{
               return sessionFactory.openSession();
        }
 
+	/*Author:Khusaal
+	Classes Used: RoleMaster.java,UserDetails.java
+	Description: User Authentication*/
+
 	public String checkLogin(String userName, String userPassword) {
 		
 		System.out.println("In Check login");
@@ -57,6 +61,10 @@ public class LoginDAOImpl implements LoginDAO{
 		return roleName;
 	}
 	
+	/*Author:Khusaal
+	Classes Used: UserDetails.java
+	Description: Setting the Specified User as notified by FacultyTPC*/
+
 	public int getStudentById(String userName) 
 	{
 		System.out.println("In getStudentById");
@@ -68,6 +76,11 @@ public class LoginDAOImpl implements LoginDAO{
 		session.close();
 		return list;
 	}
+
+	/*Author:Khusaal
+	Classes Used: UserDetails.java
+	Description: Sending notification to particular user*/
+
 	public boolean getNotification(String userName)
 	{
 		System.out.println("In getNotification username:+ "+userName);
@@ -80,6 +93,11 @@ public class LoginDAOImpl implements LoginDAO{
 		session.close();
 		return b;
 	}
+
+	/*Author:Khusaal
+	Classes Used: SpecialRole.java
+	Description: Checking the SpecialRole for FacultyTPC*/
+
 public String checkSpecialRole(String userName) {
 		
 		System.out.println("In Check Special Role");

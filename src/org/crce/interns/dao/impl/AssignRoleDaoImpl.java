@@ -26,6 +26,10 @@ public class AssignRoleDaoImpl implements AssignRoleDao{
      protected Session getSession(){
             return sessionFactory.openSession();
      }
+	
+	/*Author:Khusaal
+	Classes Used: FunctionMaster.java,FunctionRole.java
+	Description: Saving FunctionId assigned to a specific role*/
 
      @Transactional
      public void save(FunctionMaster fm,FunctionRole fr,int a) {
@@ -40,6 +44,11 @@ public class AssignRoleDaoImpl implements AssignRoleDao{
     	 
     	 session.save(fr);
      }
+
+	/*Author:Khusaal
+	Classes Used: FunctionMaster.java
+	Description: Getting the functionId from FunctionName*/
+
      @Transactional
      public int checkFunction(String function)
      {

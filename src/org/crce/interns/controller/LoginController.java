@@ -33,12 +33,18 @@ public class LoginController extends HttpServlet{
 	@Autowired
 	private CheckRoleService crService;
 	
+	/*Author:Khusaal
+	Description: Displaying The welcome page*/
+
 	@RequestMapping("/")
 	public ModelAndView welcome() {
 		System.out.println("return model");
 		return new ModelAndView("index");
 	}
 	
+	/*Author:Khusaal
+	Classes Used: LoginForm.java
+	Description: Displaying the login page*/
 
 	@RequestMapping(value="/form" , method = RequestMethod.GET)  
   	public ModelAndView showForm(HttpServletRequest request, HttpServletResponse response) {
@@ -53,6 +59,10 @@ public class LoginController extends HttpServlet{
 		
 	}
 	
+	/*Author:Khusaal
+	Classes Used: LoginForm.java,LoginService.java
+	Description: Role-based display of Home page*/
+
 	@RequestMapping(value="/logged" ,method = RequestMethod.POST)
 	public ModelAndView processForm(HttpServletRequest request, HttpServletResponse response, @Valid LoginForm loginForm, BindingResult result) {
 
@@ -151,6 +161,10 @@ public class LoginController extends HttpServlet{
 		}
 	}
 	
+	/*Author:Khusaal
+	Classes Used: NotifyForm.java,LoginService.java
+	Description: Notification to students by FacultyTPC having special roles*/
+
 	@RequestMapping(value="/notify" ,method = RequestMethod.POST)
 	public ModelAndView notifyForm(HttpServletRequest request, HttpServletResponse response,@Valid NotifyForm notify, BindingResult result,
 			Map model) 
