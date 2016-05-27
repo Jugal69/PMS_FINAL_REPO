@@ -19,6 +19,10 @@ public class AssignRoleController {
 	@Autowired
 	public AssignRoleService ars;
 	
+	/*Author:Khusaal
+	Classes Used: AssignRoleBean.java
+	Description: Creating instance of AssignRoleBean*/
+
 	@RequestMapping(value="/AssignRole", method = RequestMethod.GET)
 	public ModelAndView welcome(HttpServletRequest request, HttpServletResponse response) {
 		System.out.println("return model");
