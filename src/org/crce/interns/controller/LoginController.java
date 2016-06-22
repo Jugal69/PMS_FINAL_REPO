@@ -39,20 +39,7 @@ public class LoginController extends HttpServlet{
    	//----------------------------------------------------------------------------------------------------------
 	@RequestMapping("/")
 
-	public ModelAndView welcome() {
-		try
-		{
-			System.out.println("return model");
-			return new ModelAndView("index");
-		}
-		catch(Exception e)
-		{
-			System.out.println(e);
-			ModelAndView model=new ModelAndView("500");
-			model.addObject("exception", "Welcome page");
-			return model;
-		}
-	}
+	
 	public ModelAndView welcome() throws ParseException {
 		System.out.println("return model");
                 /**
@@ -85,7 +72,44 @@ public class LoginController extends HttpServlet{
 		return new ModelAndView("index");
 
 	}
-	
+	@RequestMapping(value="/start" , method = RequestMethod.GET)
+	public ModelAndView start(HttpServletRequest request, HttpServletResponse response)
+	{
+		try{
+			System.out.println("Inside Start");
+			LoginForm loginForm = new LoginForm();
+			ModelAndView model= new ModelAndView("start");
+			model.addObject("loginForm", loginForm);
+			
+			return model;	
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+			ModelAndView model=new ModelAndView("500");
+			model.addObject("exception", "loginForm");
+			return model;
+		}
+	}
+	@RequestMapping(value="/end" )
+	public ModelAndView end(HttpServletRequest request, HttpServletResponse response)
+	{
+		try{
+			System.out.println("Inside End");
+			ModelAndView model= new ModelAndView("end");
+			//model.addObject("loginForm", loginForm);
+			
+			return model;	
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+			ModelAndView model=new ModelAndView("500");
+			model.addObject("exception", "loginForm");
+			return model;
+		}
+	}
+
    	//----------------------------------------------------------------------------------------------------------
 	@RequestMapping(value="/form" , method = RequestMethod.GET)  
   	public ModelAndView showForm(HttpServletRequest request, HttpServletResponse response) {
